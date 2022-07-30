@@ -1,0 +1,32 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pylab as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn import datasets
+from sklearn.neighbors import KNeighborsClassifier
+
+data=datasets.load_breast_cancer()
+candf=pd.DataFrame(data.data,columns=data.feature_names)
+candf['target']=data.target
+
+x=data.data
+y=data.target
+xtrain,xtest,ytrain,ytest=train_test_split(x,y,random_state=100,test_size=.25)
+
+%%capture
+k_neighbors=range(1,13)
+scoretrain=[]
+scoretest=[]
+for i in k_neighbors:
+    
+    knn=KNeighborsClassifier(n_neighbors=i)
+    knn.fit(xtrain,ytrain)
+    scoretrain.append(knn.score(xtrain,ytrain))
+    scoretest.append( knn.score(xtest,ytest))
+    
+    
+fig,ax=plt.subplots(figsize=(10,3))
+ax.plot(k_neighbors,scoretrain,label='train')
+ax.plot(k_neighbors,scoretest,label='test')
+plt.legend()
